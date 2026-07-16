@@ -98,17 +98,25 @@ func get_player_script(type: String) -> Script:
 	return load("res://src/players/SquarePlayer.gd")
 
 func complete_level() -> void:
-	# Avansează la următorul nivel
 	var game_manager = get_node_or_null("/root/GameManager")
 	if game_manager and game_manager.is_lan_play:
 		if multiplayer.is_server():
 			rpc("complete_level_rpc")
 	else:
-		if game_manager:
-			game_manager.next_level()
+		# Local Co-op
+		show_completion_on_hud()
 
 @rpc("any_peer", "call_local", "reliable")
 func complete_level_rpc() -> void:
-	var game_manager = get_node_or_null("/root/GameManager")
-	if game_manager:
-		game_manager.next_level()
+	show_completion_on_hud()
+
+func show_completion_on_hud() -> void:
+	var hud = get_node_or_null("HUD")
+	if hud:
+		hud.show_level_completed()
+	else:
+		# fallback dacă nu există HUD
+		var game_manager = get_node_or_null("/root/GameManager")
+		if game_manager:
+			game_manager.unlock_next_level()
+			game_manager.next_level()

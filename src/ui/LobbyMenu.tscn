@@ -133,6 +133,32 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Pornește Jocul!"
 
+[node name="LevelPanel" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="LevelTitle" type="Label" parent="CenterContainer/VBoxContainer/LevelPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Selectează Nivelul:"
+horizontal_alignment = 1
+
+[node name="BtnLevel1" type="Button" parent="CenterContainer/VBoxContainer/LevelPanel"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Nivelul 1: Potrivire în Șablon"
+
+[node name="BtnLevel2" type="Button" parent="CenterContainer/VBoxContainer/LevelPanel"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Nivelul 2: Transportul Bilei"
+
+[node name="BtnLevel3" type="Button" parent="CenterContainer/VBoxContainer/LevelPanel"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Nivelul 3: Tunele Înguste"
+
 [node name="BtnBack" type="Button" parent="CenterContainer/VBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(0, 40)

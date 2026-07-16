@@ -30,10 +30,16 @@ const LEVELS = [
 ]
 
 var current_level_index: int = 0
+var max_unlocked_level_index: int = 0
 var remove_ads_purchased: bool = false
 
 func _ready() -> void:
 	pass
+
+func unlock_next_level() -> void:
+	var next_idx = current_level_index + 1
+	if next_idx > max_unlocked_level_index and next_idx < LEVELS.size():
+		max_unlocked_level_index = next_idx
 
 func start_game() -> void:
 	current_level_index = 0

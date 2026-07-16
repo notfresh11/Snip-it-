@@ -3,6 +3,7 @@ extends Control
 @onready var mode_panel: VBoxContainer = $CenterContainer/VBoxContainer/ModePanel
 @onready var lan_panel: VBoxContainer = $CenterContainer/VBoxContainer/LANPanel
 @onready var color_panel: VBoxContainer = $CenterContainer/VBoxContainer/ColorPanel
+@onready var level_panel: VBoxContainer = $CenterContainer/VBoxContainer/LevelPanel
 
 @onready var btn_local: Button = $CenterContainer/VBoxContainer/ModePanel/BtnLocal
 @onready var btn_lan: Button = $CenterContainer/VBoxContainer/ModePanel/BtnLAN
@@ -15,6 +16,11 @@ extends Control
 @onready var p1_color_btn: OptionButton = $CenterContainer/VBoxContainer/ColorPanel/HBox/P1Color
 @onready var p2_color_btn: OptionButton = $CenterContainer/VBoxContainer/ColorPanel/HBox/P2Color
 @onready var btn_start: Button = $CenterContainer/VBoxContainer/ColorPanel/BtnStart
+
+@onready var btn_level1: Button = $CenterContainer/VBoxContainer/LevelPanel/BtnLevel1
+@onready var btn_level2: Button = $CenterContainer/VBoxContainer/LevelPanel/BtnLevel2
+@onready var btn_level3: Button = $CenterContainer/VBoxContainer/LevelPanel/BtnLevel3
+
 @onready var btn_back: Button = $CenterContainer/VBoxContainer/BtnBack
 
 func _ready() -> void:
@@ -45,6 +51,11 @@ func _ready() -> void:
 	p1_color_btn.item_selected.connect(_on_p1_color_selected)
 	p2_color_btn.item_selected.connect(_on_p2_color_selected)
 
+	# Conectare butoane selecție nivel
+	btn_level1.pressed.connect(func(): _load_selected_level(0))
+	btn_level2.pressed.connect(func(): _load_selected_level(1))
+	btn_level3.pressed.connect(func(): _load_selected_level(2))
+
 	if network_manager:
 		network_manager.lan_servers_updated.connect(_on_servers_updated)
 		network_manager.peer_connected_custom.connect(_on_peer_connected)
@@ -57,6 +68,7 @@ func show_panel(panel_name: String) -> void:
 	mode_panel.visible = (panel_name == "mode")
 	lan_panel.visible = (panel_name == "lan")
 	color_panel.visible = (panel_name == "color")
+	level_panel.visible = (panel_name == "level")
 	btn_back.visible = (panel_name != "mode")
 
 func _on_local_coop_pressed() -> void:
@@ -151,22 +163,64 @@ func sync_colors(c1: Color, c2: Color) -> void:
 		game_manager.p2_color = c2
 		game_manager.player_colors_updated.emit()
 
+# --- Selecție Nivel ---
+
 func _on_start_pressed() -> void:
 	var game_manager = get_node_or_null("/root/GameManager")
 	if game_manager:
 		if game_manager.is_lan_play:
-			rpc("start_game_rpc")
+			if game_manager.is_host:
+				rpc("show_level_panel_rpc")
 		else:
-			game_manager.start_game()
+			show_level_panel()
 
 @rpc("any_peer", "call_local", "reliable")
-func start_game_rpc() -> void:
+func show_level_panel_rpc() -> void:
+	show_level_panel()
+
+func show_level_panel() -> void:
+	show_panel("level")
 	var game_manager = get_node_or_null("/root/GameManager")
 	if game_manager:
-		game_manager.start_game()
+		# Configurează deblocarea butoanelor conform progresului deblocate
+		btn_level2.disabled = (game_manager.max_unlocked_level_index < 1)
+		btn_level3.disabled = (game_manager.max_unlocked_level_index < 2)
+
+		# Setează textul corespunzător
+		btn_level2.text = "Nivelul 2: Transportul Bilei" if game_manager.max_unlocked_level_index >= 1 else "Nivelul 2 [Blocat]"
+		btn_level3.text = "Nivelul 3: Tunele Înguste" if game_manager.max_unlocked_level_index >= 2 else "Nivelul 3 [Blocat]"
+
+func _load_selected_level(index: int) -> void:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		if game_manager.is_lan_play:
+			if game_manager.is_host:
+				rpc("start_level_rpc", index)
+		else:
+			game_manager.current_level_index = index
+			game_manager.load_level(game_manager.LEVELS[index])
+
+@rpc("any_peer", "call_local", "reliable")
+func start_level_rpc(index: int) -> void:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.current_level_index = index
+		game_manager.load_level(game_manager.LEVELS[index])
 
 func _on_back_pressed() -> void:
-	var network_manager = get_node_or_null("/root/NetworkManager")
-	if network_manager:
-		network_manager.disconnect_network()
-	show_panel("mode")
+	if level_panel.visible:
+		show_panel("color")
+	elif color_panel.visible:
+		if mode_panel.visible:
+			pass
+		else:
+			var game_manager = get_node_or_null("/root/GameManager")
+			if game_manager and game_manager.is_lan_play:
+				show_panel("lan")
+			else:
+				show_panel("mode")
+	else:
+		var network_manager = get_node_or_null("/root/NetworkManager")
+		if network_manager:
+			network_manager.disconnect_network()
+		show_panel("mode")

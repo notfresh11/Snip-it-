@@ -17,11 +17,15 @@ extends CanvasLayer
 @onready var hint_label: Label = $HintPopup/VBox/HintLabel
 @onready var btn_close_hint: Button = $HintPopup/VBox/BtnCloseHint
 
+@onready var level_complete_overlay: ColorRect = $LevelCompleteOverlay
+@onready var btn_next_level: Button = $LevelCompleteOverlay/VBox/BtnNextLevel
+
 func _ready() -> void:
 	# Ascundem overlay-urile la pornire
 	ad_overlay.visible = false
 	partner_waiting_overlay.visible = false
 	hint_popup.visible = false
+	level_complete_overlay.visible = false
 
 	# Setăm controalele vizibile în funcție de LAN vs Local
 	setup_controls_visibility()
@@ -38,6 +42,7 @@ func _ready() -> void:
 	btn_remove_ads.pressed.connect(_on_remove_ads_pressed)
 	btn_lobby.pressed.connect(_on_lobby_pressed)
 	btn_close_hint.pressed.connect(func(): hint_popup.visible = false)
+	btn_next_level.pressed.connect(_go_to_next_level)
 
 	# Conectare butoane virtuale de control pentru P1
 	$P1Controls/BtnLeft.button_down.connect(func(): Input.action_press("p1_left"))
@@ -162,3 +167,22 @@ func _on_ad_overlay_toggled(visible: bool, countdown_text: String) -> void:
 	ad_overlay.visible = visible
 	ad_label.text = countdown_text
 	get_tree().paused = visible # Pune pauză fizicii și jocului în timp ce rulează reclama
+
+# --- Tranziție Victorie Nivel (Enter/Space) ---
+
+func show_level_completed() -> void:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.unlock_next_level()
+	level_complete_overlay.visible = true
+
+func _input(event: InputEvent) -> void:
+	if level_complete_overlay and level_complete_overlay.visible and event is InputEventKey and event.is_pressed() and not event.is_echo():
+		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER or event.keycode == KEY_SPACE:
+			_go_to_next_level()
+
+func _go_to_next_level() -> void:
+	level_complete_overlay.visible = false
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.next_level()
