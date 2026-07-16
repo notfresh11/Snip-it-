@@ -16,16 +16,8 @@ shape = SubResource("CircleShape2D_ball")
 
 [node name="ColorBall" type="Polygon2D" parent="."]
 color = Color(0.9, 0.4, 0.1, 1.0)
-polygon = PackedVector2Array([
-	Vector2(-24, 0), Vector2(-22, 10), Vector2(-17, 17), Vector2(-10, 22),
-	Vector2(0, 24), Vector2(10, 22), Vector2(17, 17), Vector2(22, 10),
-	Vector2(24, 0), Vector2(22, -10), Vector2(17, -17), Vector2(-10, -22),
-	Vector2(0, -24), Vector2(-10, -22), Vector2(-17, -17), Vector2(-22, -10)
-])
+polygon = PackedVector2Array(-24, 0, -22, 10, -17, 17, -10, 22, 0, 24, 10, 22, 17, 17, 22, 10, 24, 0, 22, -10, 17, -17, -10, -22, 0, -24, -10, -22, -17, -17, -22, -10)
 
 [node name="CoreBall" type="Polygon2D" parent="ColorBall"]
 color = Color(1.0, 0.6, 0.2, 1.0)
-polygon = PackedVector2Array([
-	Vector2(-12, 0), Vector2(-8, 8), Vector2(0, 12), Vector2(8, 8),
-	Vector2(12, 0), Vector2(8, -8), Vector2(0, -12), Vector2(-8, -8)
-])
+polygon = PackedVector2Array(-12, 0, -8, 8, 0, 12, 8, 8, 12, 0, 8, -8, 0, -12, -8, -8)

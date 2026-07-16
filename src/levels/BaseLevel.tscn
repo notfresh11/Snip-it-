@@ -25,32 +25,11 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBoundaries"]
-polygon = PackedVector2Array(
-	Vector2(0, 0),
-	Vector2(1152, 0),
-	Vector2(1152, 648),
-	Vector2(0, 648),
-	Vector2(0, 0),
-	Vector2(-20, -20),
-	Vector2(-20, 668),
-	Vector2(1172, 668),
-	Vector2(1172, -20),
-	Vector2(-20, -20)
-)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648, 0, 0, -20, -20, -20, 668, 1172, 668, 1172, -20, -20, -20)
 
 [node name="GroundVisual" type="Polygon2D" parent="StaticBoundaries"]
 color = Color(0.24, 0.28, 0.35, 1.0)
-polygon = PackedVector2Array(
-	Vector2(0, 520),
-	Vector2(1152, 520),
-	Vector2(1152, 648),
-	Vector2(0, 648)
-)
+polygon = PackedVector2Array(0, 520, 1152, 520, 1152, 648, 0, 648)
 
 [node name="GroundCollision" type="CollisionPolygon2D" parent="StaticBoundaries"]
-polygon = PackedVector2Array(
-	Vector2(0, 520),
-	Vector2(1152, 520),
-	Vector2(1152, 648),
-	Vector2(0, 648)
-)
+polygon = PackedVector2Array(0, 520, 1152, 520, 1152, 648, 0, 648)

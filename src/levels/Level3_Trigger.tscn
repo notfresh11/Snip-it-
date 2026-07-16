@@ -39,14 +39,10 @@ collision_mask = 3
 
 [node name="Visual" type="Polygon2D" parent="TunnelCeiling" index="0"]
 color = Color(0.24, 0.28, 0.35, 1.0)
-polygon = PackedVector2Array([
-	Vector2(450, 320), Vector2(750, 320), Vector2(750, 480), Vector2(450, 480)
-])
+polygon = PackedVector2Array(450, 320, 750, 320, 750, 480, 450, 480)
 
 [node name="Collision" type="CollisionPolygon2D" parent="TunnelCeiling" index="1"]
-polygon = PackedVector2Array([
-	Vector2(450, 320), Vector2(750, 320), Vector2(750, 480), Vector2(450, 480)
-])
+polygon = PackedVector2Array(450, 320, 750, 320, 750, 480, 450, 480)
 
 [node name="PressureButton" parent="." index="5" instance=ExtResource("3_button")]
 position = Vector2(700, 520)
@@ -61,9 +57,7 @@ shape = SubResource("RectangleShape2D_wall")
 
 [node name="Visual" type="Polygon2D" parent="BlockingWall" index="1"]
 color = Color(0.9, 0.6, 0.1, 1.0)
-polygon = PackedVector2Array([
-	Vector2(-20, -75), Vector2(20, -75), Vector2(20, 75), Vector2(-20, 75)
-])
+polygon = PackedVector2Array(-20, -75, 20, -75, 20, 75, -20, 75)
 
 [node name="WinArea" type="Area2D" parent="." index="7"]
 position = Vector2(1050, 470)
@@ -75,9 +69,7 @@ shape = SubResource("RectangleShape2D_win")
 
 [node name="WinVisual" type="Polygon2D" parent="WinArea" index="1"]
 color = Color(0.2, 0.9, 0.4, 0.3)
-polygon = PackedVector2Array([
-	Vector2(-40, -50), Vector2(40, -50), Vector2(40, 50), Vector2(-40, 50)
-])
+polygon = PackedVector2Array(-40, -50, 40, -50, 40, 50, -40, 50)
 
 [node name="WinLabel" type="Label" parent="WinArea" index="2"]
 offset_left = -40.0
