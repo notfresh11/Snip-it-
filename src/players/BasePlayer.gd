@@ -164,7 +164,7 @@ func _physics_process(delta: float) -> void:
 	if rotation_input != 0:
 		rotation += rotation_input * ROTATION_SPEED * delta
 
-	# Squash & Stretch (Ghemuire/Alungire)
+	# Squash & Stretch (Ghemuire/Alungire) - Scalăm doar elementele vizuale pentru a păstra coliziunile fizice stabile
 	var target_scale = Vector2.ONE
 	if Input.is_action_pressed(prefix + "down"):
 		# Ghemuit (squash)
@@ -173,7 +173,12 @@ func _physics_process(delta: float) -> void:
 		# Alungit în aer (stretch)
 		target_scale = Vector2(0.8, 1.3)
 
-	scale = scale.lerp(target_scale, 15.0 * delta)
+	var current_visual_scale = polygon_2d.scale
+	var next_visual_scale = current_visual_scale.lerp(target_scale, 15.0 * delta)
+
+	polygon_2d.scale = next_visual_scale
+	outline_line.scale = next_visual_scale
+	face_sprite.scale = next_visual_scale
 
 	move_and_slide()
 
