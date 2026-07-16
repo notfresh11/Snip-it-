@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cx6y4np5xyg01"]
+[gd_scene load_steps=5 format=3 uid="uid://cx6y4np5xyg01"]
 
 [ext_resource type="PackedScene" uid="uid://df6y34np5xyga" path="res://src/levels/BaseLevel.tscn" id="1_base"]
 [ext_resource type="PackedScene" uid="uid://b0y6m8m2v8p3r" path="res://src/objects/StencilShape.tscn" id="2_stencil"]
+[ext_resource type="Script" path="res://src/levels/Level1_Stencil.gd" id="3_script"]
 
 [node name="Level1_Stencil" instance=ExtResource("1_base")]
+script = ExtResource("3_script")
 p1_type = "Square"
 p2_type = "Circle"
 
@@ -29,9 +31,9 @@ text = "Indicație: Decupați-vă reciproc pentru a umple perfect conturul timp 
 position = Vector2(576, 350)
 
 [node name="Polygon2D" parent="StencilShape" index="0"]
-polygon = PackedVector2Array(-60, 40, -60, -20, 0, -70, 60, -20, 60, 40, 20, 40, 20, 70, -20, 70, -20, 40)
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)
 
 [node name="CollisionPolygon2D" parent="StencilShape" index="1"]
-polygon = PackedVector2Array(-60, 40, -60, -20, 0, -70, 60, -20, 60, 40, 20, 40, 20, 70, -20, 70, -20, 40)
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)
 
 [connection signal="stencil_completed" from="StencilShape" to="." method="complete_level"]
