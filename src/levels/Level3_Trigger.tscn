@@ -1,0 +1,91 @@
+[gd_scene load_steps=7 format=3 uid="uid://dmh4y2808vy83"]
+
+[ext_resource type="PackedScene" uid="uid://df6y34np5xyga" path="res://src/levels/BaseLevel.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/levels/Level3_Trigger.gd" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://dmh2y2808vy8r" path="res://src/objects/PressureButton.tscn" id="3_button"]
+
+[sub_shape type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 150)
+
+[sub_shape type="RectangleShape2D" id="RectangleShape2D_win"]
+size = Vector2(80, 100)
+
+[node name="Level3_Trigger" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+p1_type = "Diamond"
+p2_type = "Capsule"
+
+[node name="LevelTitle" type="Label" parent="." index="2"]
+offset_left = 30.0
+offset_top = 80.0
+offset_right = 500.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.7)
+theme_override_font_sizes/font_size = 20
+text = "Nivelul 3: Tunele Înguste & Activare"
+
+[node name="Instruction" type="Label" parent="." index="3"]
+offset_left = 30.0
+offset_top = 115.0
+offset_right = 650.0
+offset_bottom = 155.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+theme_override_font_sizes/font_size = 14
+text = "Indicație: Decupați-l pe Player 1 până devine o fâșie foarte subțire pentru a se strecura în tunel!"
+
+[node name="TunnelCeiling" type="StaticBody2D" parent="." index="4"]
+collision_layer = 3
+collision_mask = 3
+
+[node name="Visual" type="Polygon2D" parent="TunnelCeiling" index="0"]
+color = Color(0.24, 0.28, 0.35, 1.0)
+polygon = PackedVector2Array([
+	Vector2(450, 320), Vector2(750, 320), Vector2(750, 480), Vector2(450, 480)
+])
+
+[node name="Collision" type="CollisionPolygon2D" parent="TunnelCeiling" index="1"]
+polygon = PackedVector2Array([
+	Vector2(450, 320), Vector2(750, 320), Vector2(750, 480), Vector2(450, 480)
+])
+
+[node name="PressureButton" parent="." index="5" instance=ExtResource("3_button")]
+position = Vector2(700, 520)
+
+[node name="BlockingWall" type="StaticBody2D" parent="." index="6"]
+position = Vector2(900, 445)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Collision" type="CollisionShape2D" parent="BlockingWall" index="0"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="Polygon2D" parent="BlockingWall" index="1"]
+color = Color(0.9, 0.6, 0.1, 1.0)
+polygon = PackedVector2Array([
+	Vector2(-20, -75), Vector2(20, -75), Vector2(20, 75), Vector2(-20, 75)
+])
+
+[node name="WinArea" type="Area2D" parent="." index="7"]
+position = Vector2(1050, 470)
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WinArea" index="0"]
+shape = SubResource("RectangleShape2D_win")
+
+[node name="WinVisual" type="Polygon2D" parent="WinArea" index="1"]
+color = Color(0.2, 0.9, 0.4, 0.3)
+polygon = PackedVector2Array([
+	Vector2(-40, -50), Vector2(40, -50), Vector2(40, 50), Vector2(-40, 50)
+])
+
+[node name="WinLabel" type="Label" parent="WinArea" index="2"]
+offset_left = -40.0
+offset_top = -15.0
+offset_right = 40.0
+offset_bottom = 15.0
+theme_override_colors/font_color = Color(0.2, 0.9, 0.4, 1.0)
+theme_override_font_sizes/font_size = 14
+text = "WIN ZONE"
+horizontal_alignment = 1
+vertical_alignment = 1
