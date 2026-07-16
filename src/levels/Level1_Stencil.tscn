@@ -28,7 +28,7 @@ theme_override_font_sizes/font_size = 14
 text = "Indicație: Decupați-vă reciproc pentru a umple perfect conturul timp de 3 secunde!"
 
 [node name="StencilShape" parent="." index="4" instance=ExtResource("2_stencil")]
-position = Vector2(576, 350)
+position = Vector2(576, 480)
 
 [node name="Polygon2D" parent="StencilShape" index="0"]
 polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)
