@@ -3,6 +3,7 @@ class_name BasePlayer
 
 @export var player_id: int = 1
 @export var shape_type: String = "Square"
+@export var is_focusing: bool = false
 
 # Proprietăți fizice de bază
 const SPEED = 250.0
@@ -88,6 +89,7 @@ func _ready() -> void:
 		config.add_property(NodePath(".:rotation"))
 		config.add_property(NodePath(".:scale"))
 		config.add_property(NodePath(".:velocity"))
+		config.add_property(NodePath(".:is_focusing"))
 		sync_node.replication_config = config
 
 func load_textures() -> void:
@@ -155,20 +157,37 @@ func _physics_process(delta: float) -> void:
 	# Gestionare input
 	var prefix = "p1_" if player_id == 1 else "p2_"
 
-	# Gestionare Focus / Overlap Mode - Când ținem apăsat Focus (Shift), pierdem coliziunea cu celălalt jucător ca să îl putem suprapune și tăia
-	var is_focusing = Input.is_action_pressed(prefix + "focus")
+	# Gestionare Focus / Overlap Mode - Toggle (Apasă o dată pentru activare, din nou pentru dezactivare)
+	if Input.is_action_just_pressed(prefix + "focus"):
+		is_focusing = not is_focusing
+
+	# Aplicăm modul de coliziune în funcție de starea de Focus a oricăruia dintre jucători
+	var other = get_other_player()
+	var other_focusing = false
+	if other:
+		other_focusing = other.is_focusing
+	var any_focusing = is_focusing or other_focusing
+
 	if player_id == 1:
 		collision_layer = 2
-		if is_focusing:
-			collision_mask = 1 + 8 # Mediul (1) + Bile (8) - fără Player 2 (4)
+		if any_focusing:
+			collision_mask = 1 + 8 # Doar Mediul (1) + Bile (8) - fără Player 2 (4)
 		else:
 			collision_mask = 1 + 4 + 8 # Mediul (1) + Player 2 (4) + Bile (8)
 	else:
 		collision_layer = 4
-		if is_focusing:
-			collision_mask = 1 + 8 # Mediul (1) + Bile (8) - fără Player 1 (2)
+		if any_focusing:
+			collision_mask = 1 + 8 # Doar Mediul (1) + Bile (8) - fără Player 1 (2)
 		else:
 			collision_mask = 1 + 2 + 8 # Mediul (1) + Player 1 (2) + Bile (8)
+
+	# Feedback Vizual pentru Modul Focus: reducem transparența corpului și a feței pentru a arăta că este intangibil (fantomă)
+	if is_focusing:
+		polygon_2d.modulate.a = 0.65
+		face_sprite.modulate.a = 0.65
+	else:
+		polygon_2d.modulate.a = 1.0
+		face_sprite.modulate.a = 1.0
 
 	# Mișcare stânga/dreapta
 	var direction = Input.get_axis(prefix + "left", prefix + "right")
