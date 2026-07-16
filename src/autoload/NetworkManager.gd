@@ -142,5 +142,9 @@ func _on_server_disconnected() -> void:
 # --- RPC Sincronizare Co-op IAP ---
 @rpc("any_peer", "call_local", "reliable")
 func sync_remove_ads_status(status: bool) -> void:
-	GameManager.remove_ads_purchased = status
-	AdManager.remove_ads_status_changed.emit()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.remove_ads_purchased = status
+	var ad_manager = get_node_or_null("/root/AdManager")
+	if ad_manager:
+		ad_manager.remove_ads_status_changed.emit()

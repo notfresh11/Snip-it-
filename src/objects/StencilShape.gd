@@ -22,7 +22,7 @@ var is_done: bool = false
 func _ready() -> void:
 	# Calculează aria țintă inițială
 	var global_pts = to_global_points(polygon_2d.polygon, global_transform)
-	target_area = abs(Geometry2D.polygon_area(global_pts))
+	target_area = get_polygon_area(global_pts)
 	_update_border()
 
 func _process(delta: float) -> void:
@@ -52,7 +52,7 @@ func _process(delta: float) -> void:
 	for piece in union_players:
 		var intersection = Geometry2D.intersect_polygons(stencil_global, piece)
 		for inter_piece in intersection:
-			covered_area += abs(Geometry2D.polygon_area(inter_piece))
+			covered_area += get_polygon_area(inter_piece)
 
 	current_ratio = covered_area / target_area if target_area > 0 else 0.0
 
@@ -89,3 +89,15 @@ func to_global_points(poly: PackedVector2Array, trans: Transform2D) -> PackedVec
 	for i in range(poly.size()):
 		out[i] = trans * poly[i]
 	return out
+
+# Shoelace formula pentru a calcula aria unui poligon 2D de orice dimensiune
+func get_polygon_area(poly: PackedVector2Array) -> float:
+	var n = poly.size()
+	if n < 3:
+		return 0.0
+	var area = 0.0
+	for i in range(n):
+		var j = (i + 1) % n
+		area += poly[i].x * poly[j].y
+		area -= poly[j].x * poly[i].y
+	return abs(area) / 2.0

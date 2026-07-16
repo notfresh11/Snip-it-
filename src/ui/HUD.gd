@@ -27,8 +27,10 @@ func _ready() -> void:
 	setup_controls_visibility()
 
 	# Conectare semnale AdManager
-	AdManager.ad_overlay_toggled.connect(_on_ad_overlay_toggled)
-	AdManager.remove_ads_status_changed.connect(_on_remove_ads_status_changed)
+	var ad_manager = get_node_or_null("/root/AdManager")
+	if ad_manager:
+		ad_manager.ad_overlay_toggled.connect(_on_ad_overlay_toggled)
+		ad_manager.remove_ads_status_changed.connect(_on_remove_ads_status_changed)
 
 	# Conectare butoane interfață
 	btn_hint.pressed.connect(_on_hint_pressed)
@@ -68,9 +70,10 @@ func _trigger_action(action: String) -> void:
 	get_tree().create_timer(0.05).timeout.connect(func(): Input.action_release(action))
 
 func setup_controls_visibility() -> void:
-	if GameManager.is_lan_play:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play:
 		# În LAN, afișăm doar controalele locale ale jucătorului
-		if GameManager.is_host:
+		if game_manager.is_host:
 			p1_controls.visible = true
 			p2_controls.visible = false
 		else:
@@ -82,15 +85,19 @@ func setup_controls_visibility() -> void:
 		p2_controls.visible = true
 
 func _on_remove_ads_status_changed() -> void:
-	if GameManager.remove_ads_purchased:
-		btn_remove_ads.text = "Remove Ads: CUMPĂRAT"
-		btn_remove_ads.modulate = Color.GREEN
-	else:
-		btn_remove_ads.text = "Cumpără: Remove Ads ($1.99)"
-		btn_remove_ads.modulate = Color.WHITE
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		if game_manager.remove_ads_purchased:
+			btn_remove_ads.text = "Remove Ads: CUMPĂRAT"
+			btn_remove_ads.modulate = Color.GREEN
+		else:
+			btn_remove_ads.text = "Cumpără: Remove Ads ($1.99)"
+			btn_remove_ads.modulate = Color.WHITE
 
 func _on_remove_ads_pressed() -> void:
-	AdManager.toggle_remove_ads()
+	var ad_manager = get_node_or_null("/root/AdManager")
+	if ad_manager:
+		ad_manager.toggle_remove_ads()
 
 func _on_reset_pressed() -> void:
 	# Trigger reset pe ambele caractere local
@@ -100,29 +107,37 @@ func _on_reset_pressed() -> void:
 			p.trigger_reset_local()
 
 func _on_lobby_pressed() -> void:
-	GameManager.go_to_lobby()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.go_to_lobby()
 
 # --- Hint Ads / Rewarded ---
 
 func _on_hint_pressed() -> void:
-	if GameManager.is_lan_play:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play:
 		rpc("partner_watching_ad", true)
 
-	AdManager.try_show_rewarded_hint(func():
-		if GameManager.is_lan_play:
-			rpc("partner_watching_ad", false)
-		show_level_hint()
-	)
+	var ad_manager = get_node_or_null("/root/AdManager")
+	if ad_manager:
+		ad_manager.try_show_rewarded_hint(func():
+			if game_manager and game_manager.is_lan_play:
+				rpc("partner_watching_ad", false)
+			show_level_hint()
+		)
 
 @rpc("any_peer", "call_local", "reliable")
 func partner_watching_ad(active: bool) -> void:
-	if not multiplayer.is_server() or not GameManager.is_host:
-		# Dacă celălalt vizualizează, arătăm ecranul de așteptare co-op prietenos
-		partner_waiting_overlay.visible = active
-		get_tree().paused = active
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		if not multiplayer.is_server() or not game_manager.is_host:
+			# Dacă celălalt vizualizează, arătăm ecranul de așteptare co-op prietenos
+			partner_waiting_overlay.visible = active
+			get_tree().paused = active
 
 func show_level_hint() -> void:
-	var level_idx = GameManager.current_level_index
+	var game_manager = get_node_or_null("/root/GameManager")
+	var level_idx = game_manager.current_level_index if game_manager else 0
 	var hint_text = ""
 	match level_idx:
 		0:
