@@ -7,7 +7,8 @@ var is_ad_active: bool = false
 
 # Simulează afișarea unei reclame interstițiale (la final de nivel)
 func try_show_interstitial(on_complete_callback: Callable) -> void:
-	if GameManager.remove_ads_purchased:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.remove_ads_purchased:
 		on_complete_callback.call()
 		return
 
@@ -31,8 +32,6 @@ func try_show_rewarded_hint(on_reward_callback: Callable) -> void:
 	var seconds_left = 5
 	ad_overlay_toggled.emit(true, "Se încarcă indiciul... " + str(seconds_left) + "s")
 
-	# Sincronizare Co-op: Dacă suntem în multiplayer, punem pauză jocului sau trimitem un RPC (se poate gestiona în HUD)
-
 	var timer = get_tree().create_timer(1.0)
 	var count_down_func
 	count_down_func = func():
@@ -49,9 +48,11 @@ func try_show_rewarded_hint(on_reward_callback: Callable) -> void:
 
 # Simulează achiziția Remove Ads (sau toggle-ul din setări)
 func toggle_remove_ads() -> void:
-	GameManager.remove_ads_purchased = !GameManager.remove_ads_purchased
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.remove_ads_purchased = !game_manager.remove_ads_purchased
 	remove_ads_status_changed.emit()
 
-	# Regula de aur Co-op: Dacă suntem conectați în LAN, sincronizăm starea pe celălalt peer
-	if NetworkManager and NetworkManager.is_multiplayer_active():
-		NetworkManager.sync_remove_ads_status.rpc(GameManager.remove_ads_purchased)
+	var network_manager = get_node_or_null("/root/NetworkManager")
+	if network_manager and network_manager.is_multiplayer_active() and game_manager:
+		network_manager.sync_remove_ads_status.rpc(game_manager.remove_ads_purchased)

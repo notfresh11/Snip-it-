@@ -6,4 +6,6 @@ func _ready() -> void:
 	btn_menu.pressed.connect(_on_menu_pressed)
 
 func _on_menu_pressed() -> void:
-	GameManager.go_to_lobby()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.go_to_lobby()

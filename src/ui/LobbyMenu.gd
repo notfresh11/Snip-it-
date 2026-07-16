@@ -19,16 +19,20 @@ extends Control
 
 func _ready() -> void:
 	# Resetează rețeaua
-	NetworkManager.disconnect_network()
+	var network_manager = get_node_or_null("/root/NetworkManager")
+	if network_manager:
+		network_manager.disconnect_network()
 
 	# Inițializare opțiuni de culori
-	p1_color_btn.clear()
-	for color_name in GameManager.P1_COLORS.keys():
-		p1_color_btn.add_item(color_name)
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		p1_color_btn.clear()
+		for color_name in game_manager.P1_COLORS.keys():
+			p1_color_btn.add_item(color_name)
 
-	p2_color_btn.clear()
-	for color_name in GameManager.P2_COLORS.keys():
-		p2_color_btn.add_item(color_name)
+		p2_color_btn.clear()
+		for color_name in game_manager.P2_COLORS.keys():
+			p2_color_btn.add_item(color_name)
 
 	# Conectare semnale
 	btn_local.pressed.connect(_on_local_coop_pressed)
@@ -41,10 +45,11 @@ func _ready() -> void:
 	p1_color_btn.item_selected.connect(_on_p1_color_selected)
 	p2_color_btn.item_selected.connect(_on_p2_color_selected)
 
-	NetworkManager.lan_servers_updated.connect(_on_servers_updated)
-	NetworkManager.peer_connected_custom.connect(_on_peer_connected)
-	NetworkManager.connection_succeeded_custom.connect(_on_connection_succeeded)
-	NetworkManager.connection_failed_custom.connect(_on_connection_failed)
+	if network_manager:
+		network_manager.lan_servers_updated.connect(_on_servers_updated)
+		network_manager.peer_connected_custom.connect(_on_peer_connected)
+		network_manager.connection_succeeded_custom.connect(_on_connection_succeeded)
+		network_manager.connection_failed_custom.connect(_on_connection_failed)
 
 	show_panel("mode")
 
@@ -55,25 +60,35 @@ func show_panel(panel_name: String) -> void:
 	btn_back.visible = (panel_name != "mode")
 
 func _on_local_coop_pressed() -> void:
-	GameManager.is_lan_play = false
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.is_lan_play = false
 	show_panel("color")
 	btn_start.disabled = false
 
 func _on_lan_pressed() -> void:
-	GameManager.is_lan_play = true
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.is_lan_play = true
 	show_panel("lan")
-	NetworkManager.start_udp_listener()
+	var network_manager = get_node_or_null("/root/NetworkManager")
+	if network_manager:
+		network_manager.start_udp_listener()
 	status_lbl.text = "Scanează rețeaua locală după servere..."
 
 func _on_host_pressed() -> void:
-	var err = NetworkManager.create_host("GamerHost")
-	if err == OK:
-		GameManager.is_host = true
-		status_lbl.text = "Server creat! Așteaptă partenerul (Client)..."
-		btn_host.disabled = true
-		btn_join.disabled = true
-	else:
-		status_lbl.text = "Eroare la crearea serverului LAN."
+	var network_manager = get_node_or_null("/root/NetworkManager")
+	var game_manager = get_node_or_null("/root/GameManager")
+	if network_manager:
+		var err = network_manager.create_host("GamerHost")
+		if err == OK:
+			if game_manager:
+				game_manager.is_host = true
+			status_lbl.text = "Server creat! Așteaptă partenerul (Client)..."
+			btn_host.disabled = true
+			btn_join.disabled = true
+		else:
+			status_lbl.text = "Eroare la crearea serverului LAN."
 
 func _on_join_pressed() -> void:
 	var selected_items = server_list.get_selected_items()
@@ -81,9 +96,11 @@ func _on_join_pressed() -> void:
 		var index = selected_items[0]
 		var ip = server_list.get_item_metadata(index)
 		status_lbl.text = "Se conectează la " + ip + "..."
-		var err = NetworkManager.join_host(ip)
-		if err != OK:
-			status_lbl.text = "Eroare la conectare."
+		var network_manager = get_node_or_null("/root/NetworkManager")
+		if network_manager:
+			var err = network_manager.join_host(ip)
+			if err != OK:
+				status_lbl.text = "Eroare la conectare."
 	else:
 		status_lbl.text = "Te rog selectează un server din listă."
 
@@ -95,10 +112,10 @@ func _on_servers_updated(servers: Array) -> void:
 
 func _on_peer_connected(id: int) -> void:
 	status_lbl.text = "Partener conectat! ID: " + str(id)
-	# Trecem la panoul de culori
 	show_panel("color")
-	# Host-ul are dreptul să pornească jocul
-	btn_start.disabled = !GameManager.is_host
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		btn_start.disabled = !game_manager.is_host
 
 func _on_connection_succeeded() -> void:
 	status_lbl.text = "Conectat cu succes!"
@@ -109,35 +126,47 @@ func _on_connection_failed() -> void:
 	status_lbl.text = "Conexiune eșuată!"
 
 func _on_p1_color_selected(index: int) -> void:
-	var col_name = p1_color_btn.get_item_text(index)
-	GameManager.p1_color = GameManager.P1_COLORS[col_name]
-	GameManager.player_colors_updated.emit()
-	if GameManager.is_lan_play:
-		rpc("sync_colors", GameManager.p1_color, GameManager.p2_color)
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		var col_name = p1_color_btn.get_item_text(index)
+		game_manager.p1_color = game_manager.P1_COLORS[col_name]
+		game_manager.player_colors_updated.emit()
+		if game_manager.is_lan_play:
+			rpc("sync_colors", game_manager.p1_color, game_manager.p2_color)
 
 func _on_p2_color_selected(index: int) -> void:
-	var col_name = p2_color_btn.get_item_text(index)
-	GameManager.p2_color = GameManager.P2_COLORS[col_name]
-	GameManager.player_colors_updated.emit()
-	if GameManager.is_lan_play:
-		rpc("sync_colors", GameManager.p1_color, GameManager.p2_color)
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		var col_name = p2_color_btn.get_item_text(index)
+		game_manager.p2_color = game_manager.P2_COLORS[col_name]
+		game_manager.player_colors_updated.emit()
+		if game_manager.is_lan_play:
+			rpc("sync_colors", game_manager.p1_color, game_manager.p2_color)
 
 @rpc("any_peer", "call_local", "reliable")
 func sync_colors(c1: Color, c2: Color) -> void:
-	GameManager.p1_color = c1
-	GameManager.p2_color = c2
-	GameManager.player_colors_updated.emit()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.p1_color = c1
+		game_manager.p2_color = c2
+		game_manager.player_colors_updated.emit()
 
 func _on_start_pressed() -> void:
-	if GameManager.is_lan_play:
-		rpc("start_game_rpc")
-	else:
-		GameManager.start_game()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		if game_manager.is_lan_play:
+			rpc("start_game_rpc")
+		else:
+			game_manager.start_game()
 
 @rpc("any_peer", "call_local", "reliable")
 func start_game_rpc() -> void:
-	GameManager.start_game()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.start_game()
 
 func _on_back_pressed() -> void:
-	NetworkManager.disconnect_network()
+	var network_manager = get_node_or_null("/root/NetworkManager")
+	if network_manager:
+		network_manager.disconnect_network()
 	show_panel("mode")

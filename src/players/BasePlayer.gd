@@ -55,7 +55,9 @@ func _ready() -> void:
 
 	# Setează culoarea poligonului
 	update_player_color()
-	GameManager.player_colors_updated.connect(update_player_color)
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.player_colors_updated.connect(update_player_color)
 
 	# Configurare contur
 	outline_line.width = 4.0
@@ -89,7 +91,13 @@ func load_textures() -> void:
 	face_sprite.texture = face_normal
 
 func update_player_color() -> void:
-	var col = GameManager.p1_color if player_id == 1 else GameManager.p2_color
+	var game_manager = get_node_or_null("/root/GameManager")
+	var col = Color("0088ff")
+	if game_manager:
+		col = game_manager.p1_color if player_id == 1 else game_manager.p2_color
+	else:
+		col = Color("0088ff") if player_id == 1 else Color("ff3344")
+
 	polygon_2d.color = col
 	outline_line.default_color = col.darkened(0.4)
 	crumbs_particles.color = col
@@ -119,7 +127,8 @@ func calculate_centroid(poly: PackedVector2Array) -> Vector2:
 func _physics_process(delta: float) -> void:
 	# Autoritate în rețea
 	var is_local_controlled = true
-	if GameManager.is_lan_play:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play:
 		is_local_controlled = is_multiplayer_authority()
 
 	if not is_local_controlled:
@@ -154,9 +163,6 @@ func _physics_process(delta: float) -> void:
 
 	if rotation_input != 0:
 		rotation += rotation_input * ROTATION_SPEED * delta
-		if GameManager.is_lan_play:
-			# Sincronizare rotație
-			pass
 
 	# Squash & Stretch (Ghemuire/Alungire)
 	var target_scale = Vector2.ONE
@@ -232,7 +238,8 @@ func try_cut_other() -> void:
 
 	var intersection = Geometry2D.intersect_polygons(target_poly_global, cutter_poly_global)
 	if intersection.size() > 0:
-		if GameManager.is_lan_play:
+		var game_manager = get_node_or_null("/root/GameManager")
+		if game_manager and game_manager.is_lan_play:
 			other.rpc("apply_cut_from_rpc", cutter_poly_global)
 		else:
 			other.apply_cut(cutter_poly_global)
@@ -250,13 +257,13 @@ func apply_cut(cutter_poly_global: PackedVector2Array) -> void:
 		var max_area = -1.0
 		var best_poly: PackedVector2Array
 		for r in results:
-			var area = abs(Geometry2D.polygon_area(r))
+			var area = get_polygon_area(r)
 			if area > max_area:
 				max_area = area
 				best_poly = r
 
 		# Verificăm dacă fragmentul rămas este prea mic (autodistrugere)
-		var original_area = abs(Geometry2D.polygon_area(to_global_points(original_polygon, Transform2D.IDENTITY)))
+		var original_area = get_polygon_area(to_global_points(original_polygon, Transform2D.IDENTITY))
 		if max_area < original_area * 0.12 or max_area < 500:
 			trigger_respawn()
 		else:
@@ -267,7 +274,8 @@ func apply_cut(cutter_poly_global: PackedVector2Array) -> void:
 			play_snipped_effects()
 
 			# Dacă suntem în LAN, sincronizăm forma către celălalt jucător
-			if GameManager.is_lan_play and is_multiplayer_authority():
+			var game_manager = get_node_or_null("/root/GameManager")
+			if game_manager and game_manager.is_lan_play and is_multiplayer_authority():
 				rpc("update_shape_rpc", target_local_poly)
 	else:
 		trigger_respawn()
@@ -308,7 +316,8 @@ func trigger_respawn() -> void:
 	polygon = original_polygon
 	crumbs_particles.amount = 20
 
-	if GameManager.is_lan_play and is_multiplayer_authority():
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play and is_multiplayer_authority():
 		rpc("sync_respawn_rpc", global_position)
 
 @rpc("any_peer", "call_local", "reliable")
@@ -322,7 +331,8 @@ func trigger_reset_local() -> void:
 	polygon = original_polygon
 	play_snipped_effects()
 
-	if GameManager.is_lan_play and is_multiplayer_authority():
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play and is_multiplayer_authority():
 		rpc("sync_reset_rpc")
 
 @rpc("any_peer", "call_local", "reliable")
@@ -346,3 +356,15 @@ func to_local_points(poly: PackedVector2Array, trans: Transform2D) -> PackedVect
 	for i in range(poly.size()):
 		out[i] = inv * poly[i]
 	return out
+
+# Shoelace formula pentru a calcula aria unui poligon 2D de orice dimensiune
+func get_polygon_area(poly: PackedVector2Array) -> float:
+	var n = poly.size()
+	if n < 3:
+		return 0.0
+	var area = 0.0
+	for i in range(n):
+		var j = (i + 1) % n
+		area += poly[i].x * poly[j].y
+		area -= poly[j].x * poly[i].y
+	return abs(area) / 2.0

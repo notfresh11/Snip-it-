@@ -15,7 +15,9 @@ func _ready() -> void:
 	spawn_players()
 
 	# Înregistrăm nivelul în GameManager
-	GameManager.level_changed.emit(scene_file_path)
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.level_changed.emit(scene_file_path)
 
 func spawn_players() -> void:
 	var player_scene = load("res://src/players/BasePlayer.tscn")
@@ -39,7 +41,8 @@ func spawn_players() -> void:
 	add_child(player2)
 
 	# Setează autoritatea de rețea în caz de LAN
-	if GameManager.is_lan_play:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play:
 		# Host controlează Player1, Client controlează Player2
 		player1.set_multiplayer_authority(1) # Host-ul este mereu 1
 
@@ -64,12 +67,16 @@ func get_player_script(type: String) -> Script:
 
 func complete_level() -> void:
 	# Avansează la următorul nivel
-	if GameManager.is_lan_play:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_lan_play:
 		if multiplayer.is_server():
 			rpc("complete_level_rpc")
 	else:
-		GameManager.next_level()
+		if game_manager:
+			game_manager.next_level()
 
 @rpc("any_peer", "call_local", "reliable")
 func complete_level_rpc() -> void:
-	GameManager.next_level()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.next_level()

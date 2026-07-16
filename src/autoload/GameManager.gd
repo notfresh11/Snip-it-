@@ -46,9 +46,9 @@ func load_level(level_path: String) -> void:
 func next_level() -> void:
 	current_level_index += 1
 	if current_level_index < LEVELS.size():
-		# Trigger interstitial ad block (AdManager checks if it should show an ad)
-		if AdManager:
-			AdManager.try_show_interstitial(func():
+		var ad_manager = get_node_or_null("/root/AdManager")
+		if ad_manager:
+			ad_manager.try_show_interstitial(func():
 				load_level(LEVELS[current_level_index])
 			)
 		else:
@@ -65,4 +65,4 @@ func reset_level() -> void:
 func go_to_lobby() -> void:
 	is_lan_play = false
 	is_host = false
-	get_tree().change_scene_to_file("res://src/ui/LobbyMenu.tscn")
+	get_tree().change_scene_to_file("res://res://src/ui/LobbyMenu.tscn" if FileAccess.file_exists("res://res://src/ui/LobbyMenu.tscn") else "res://src/ui/LobbyMenu.tscn")
