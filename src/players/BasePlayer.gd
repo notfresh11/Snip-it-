@@ -44,6 +44,18 @@ var spawn_position: Vector2
 func _ready() -> void:
 	spawn_position = global_position
 
+	# Configurare straturi și măști de coliziune conform planului de design
+	# Layer 1: Mediul (sticle, podele, tavan) - valoare 1
+	# Layer 2: Player 1 - valoare 2
+	# Layer 3: Player 2 - valoare 4
+	# Layer 4: Bile fizice - valoare 8
+	if player_id == 1:
+		collision_layer = 2
+		collision_mask = 1 + 8 # Mediul (1) + Bile (8). Nu se ciocnește cu Player 2.
+	else:
+		collision_layer = 4
+		collision_mask = 1 + 8 # Mediul (1) + Bile (8). Nu se ciocnește cu Player 1.
+
 	# Încărcăm fețele corespunzătoare
 	load_textures()
 

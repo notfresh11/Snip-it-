@@ -10,6 +10,9 @@ class_name BaseLevel
 var player1: BasePlayer = null
 var player2: BasePlayer = null
 
+@onready var overlap_highlight: Polygon2D = get_node_or_null("OverlapHighlight")
+@onready var overlap_outline: Line2D = get_node_or_null("OverlapHighlight/Outline")
+
 func _ready() -> void:
 	# Spawnăm jucătorii
 	spawn_players()
@@ -18,6 +21,31 @@ func _ready() -> void:
 	var game_manager = get_node_or_null("/root/GameManager")
 	if game_manager:
 		game_manager.level_changed.emit(scene_file_path)
+
+func _process(_delta: float) -> void:
+	if not player1 or not player2 or not overlap_highlight:
+		return
+
+	# Obținem poligoanele globale ale ambilor jucători
+	var p1_global = player1.to_global_points(player1.polygon, player1.global_transform)
+	var p2_global = player2.to_global_points(player2.polygon, player2.global_transform)
+
+	# Calculăm intersecția/suprapunerea lor în spațiul global (scena este la 0,0, deci este egal cu spațiul global)
+	var intersections = Geometry2D.intersect_polygons(p1_global, p2_global)
+	if intersections.size() > 0:
+		var poly = intersections[0]
+		overlap_highlight.polygon = poly
+
+		# Setăm punctele conturului și închidem bucla
+		var pts = Array(poly)
+		if pts.size() > 0:
+			pts.append(pts[0])
+		if overlap_outline:
+			overlap_outline.points = PackedVector2Array(pts)
+	else:
+		overlap_highlight.polygon = PackedVector2Array()
+		if overlap_outline:
+			overlap_outline.points = PackedVector2Array()
 
 func spawn_players() -> void:
 	var player_scene = load("res://src/players/BasePlayer.tscn")
