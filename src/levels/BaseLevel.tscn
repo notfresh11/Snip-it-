@@ -24,8 +24,14 @@ position = Vector2(250, 450)
 collision_layer = 3
 collision_mask = 3
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBoundaries"]
-polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648, 0, 0, -20, -20, -20, 668, 1172, 668, 1172, -20, -20, -20)
+[node name="CeilingCollision" type="CollisionPolygon2D" parent="StaticBoundaries"]
+polygon = PackedVector2Array(0, -20, 1152, -20, 1152, 0, 0, 0)
+
+[node name="LeftWallCollision" type="CollisionPolygon2D" parent="StaticBoundaries"]
+polygon = PackedVector2Array(-20, 0, 0, 0, 0, 648, -20, 648)
+
+[node name="RightWallCollision" type="CollisionPolygon2D" parent="StaticBoundaries"]
+polygon = PackedVector2Array(1152, 0, 1172, 0, 1172, 648, 1152, 648)
 
 [node name="GroundVisual" type="Polygon2D" parent="StaticBoundaries"]
 color = Color(0.24, 0.28, 0.35, 1.0)
