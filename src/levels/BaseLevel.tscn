@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://df6y34np5xyga"]
+
+[ext_resource type="Script" path="res://src/levels/BaseLevel.gd" id="1_base_level"]
+[ext_resource type="PackedScene" uid="uid://b8b54xnv6wywg" path="res://src/ui/HUD.tscn" id="2_hud"]
+
+[node name="BaseLevel" type="Node2D"]
+script = ExtResource("1_base_level")
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -5
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.15, 0.18, 0.22, 1.0)
+
+[node name="HUD" parent="." instance=ExtResource("2_hud")]
+
+[node name="P1Spawn" type="Marker2D" parent="."]
+position = Vector2(150, 450)
+
+[node name="P2Spawn" type="Marker2D" parent="."]
+position = Vector2(250, 450)
+
+[node name="StaticBoundaries" type="StaticBody2D" parent="."]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBoundaries"]
+polygon = PackedVector2Array(
+	Vector2(0, 0),
+	Vector2(1152, 0),
+	Vector2(1152, 648),
+	Vector2(0, 648),
+	Vector2(0, 0),
+	Vector2(-20, -20),
+	Vector2(-20, 668),
+	Vector2(1172, 668),
+	Vector2(1172, -20),
+	Vector2(-20, -20)
+)
+
+[node name="GroundVisual" type="Polygon2D" parent="StaticBoundaries"]
+color = Color(0.24, 0.28, 0.35, 1.0)
+polygon = PackedVector2Array(
+	Vector2(0, 520),
+	Vector2(1152, 520),
+	Vector2(1152, 648),
+	Vector2(0, 648)
+)
+
+[node name="GroundCollision" type="CollisionPolygon2D" parent="StaticBoundaries"]
+polygon = PackedVector2Array(
+	Vector2(0, 520),
+	Vector2(1152, 520),
+	Vector2(1152, 648),
+	Vector2(0, 648)
+)

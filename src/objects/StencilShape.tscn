@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0y6m8m2v8p3r"]
+
+[ext_resource type="Script" path="res://src/objects/StencilShape.gd" id="1_stencil"]
+
+[node name="StencilShape" type="Area2D"]
+script = ExtResource("1_stencil")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(1, 1, 1, 0.25)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+
+[node name="BorderLine" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(1, 1, 1, 0.6)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="LabelProgress" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.4)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "0% / 85%"
+horizontal_alignment = 1
+vertical_alignment = 1

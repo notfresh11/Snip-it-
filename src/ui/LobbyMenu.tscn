@@ -1,0 +1,140 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfb29y0p5xvy1"]
+
+[ext_resource type="Script" path="res://src/ui/LobbyMenu.gd" id="1_lobby"]
+
+[node name="LobbyMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.14, 0.18, 1.0)
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 110.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.3)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 48
+text = "Snip it!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ModePanel" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="BtnLocal" type="Button" parent="CenterContainer/VBoxContainer/ModePanel"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Local Co-op (1 Ecran)"
+
+[node name="BtnLAN" type="Button" parent="CenterContainer/VBoxContainer/ModePanel"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Multiplayer LAN (Wi-Fi)"
+
+[node name="LANPanel" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer/LANPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="BtnHost" type="Button" parent="CenterContainer/VBoxContainer/LANPanel/HBox"]
+custom_minimum_size = Vector2(180, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Creează Server (Host)"
+
+[node name="BtnJoin" type="Button" parent="CenterContainer/VBoxContainer/LANPanel/HBox"]
+custom_minimum_size = Vector2(180, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Alătură-te (Join)"
+
+[node name="ServerList" type="ItemList" parent="CenterContainer/VBoxContainer/LANPanel"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer/LANPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1.0)
+theme_override_font_sizes/font_size = 14
+text = "Caută servere în rețeaua locală..."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ColorPanel" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="ColorTitle" type="Label" parent="CenterContainer/VBoxContainer/ColorPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Alegeți Culorile Personajelor:"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer/ColorPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="P1Color" type="OptionButton" parent="CenterContainer/VBoxContainer/ColorPanel/HBox"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="P2Color" type="OptionButton" parent="CenterContainer/VBoxContainer/ColorPanel/HBox"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnStart" type="Button" parent="CenterContainer/VBoxContainer/ColorPanel"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pornește Jocul!"
+
+[node name="BtnBack" type="Button" parent="CenterContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Înapoi"

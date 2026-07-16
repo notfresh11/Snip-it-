@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://cx6y4np5xyg01"]
+
+[ext_resource type="PackedScene" uid="uid://df6y34np5xyga" path="res://src/levels/BaseLevel.tscn" id="1_base"]
+[ext_resource type="PackedScene" uid="uid://b0y6m8m2v8p3r" path="res://src/objects/StencilShape.tscn" id="2_stencil"]
+
+[node name="Level1_Stencil" instance=ExtResource("1_base")]
+p1_type = "Square"
+p2_type = "Circle"
+
+[node name="LevelTitle" type="Label" parent="." index="2"]
+offset_left = 30.0
+offset_top = 80.0
+offset_right = 500.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.7)
+theme_override_font_sizes/font_size = 20
+text = "Nivelul 1: Potrivire în Șablon (Co-op)"
+
+[node name="Instruction" type="Label" parent="." index="3"]
+offset_left = 30.0
+offset_top = 115.0
+offset_right = 600.0
+offset_bottom = 155.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+theme_override_font_sizes/font_size = 14
+text = "Indicație: Decupați-vă reciproc pentru a umple perfect conturul timp de 3 secunde!"
+
+[node name="StencilShape" parent="." index="4" instance=ExtResource("2_stencil")]
+position = Vector2(576, 350)
+
+[node name="Polygon2D" parent="StencilShape" index="0"]
+polygon = PackedVector2Array([
+	Vector2(-60, 40), Vector2(-60, -20), Vector2(0, -70),
+	Vector2(60, -20), Vector2(60, 40), Vector2(20, 40),
+	Vector2(20, 70), Vector2(-20, 70), Vector2(-20, 40)
+])
+
+[node name="CollisionPolygon2D" parent="StencilShape" index="1"]
+polygon = PackedVector2Array([
+	Vector2(-60, 40), Vector2(-60, -20), Vector2(0, -70),
+	Vector2(60, -20), Vector2(60, 40), Vector2(20, 40),
+	Vector2(20, 70), Vector2(-20, 70), Vector2(-20, 40)
+])
+
+[connection signal="stencil_completed" from="StencilShape" to="." method="complete_level"]

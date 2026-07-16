@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6b32p0x2xvyg"]
+
+[ext_resource type="Script" path="res://src/players/BasePlayer.gd" id="1_base"]
+
+[node name="BasePlayer" type="CharacterBody2D" groups=["players"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_base")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+
+[node name="OutlineLine" type="Line2D" parent="."]
+
+[node name="FaceSprite" type="Sprite2D" parent="."]
+z_index = 1
+
+[node name="CrumbsParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 20
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 400)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+scale_amount_min = 4.0
+scale_amount_max = 8.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
