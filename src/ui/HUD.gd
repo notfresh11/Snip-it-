@@ -50,6 +50,8 @@ func _ready() -> void:
 	$P1Controls/BtnRotLeft.button_up.connect(func(): Input.action_release("p1_rotate_left"))
 	$P1Controls/BtnRotRight.button_down.connect(func(): Input.action_press("p1_rotate_right"))
 	$P1Controls/BtnRotRight.button_up.connect(func(): Input.action_release("p1_rotate_right"))
+	$P1Controls/BtnFocus.button_down.connect(func(): Input.action_press("p1_focus"))
+	$P1Controls/BtnFocus.button_up.connect(func(): Input.action_release("p1_focus"))
 
 	# Conectare butoane virtuale de control pentru P2
 	$P2Controls/BtnLeft.button_down.connect(func(): Input.action_press("p2_left"))
@@ -62,6 +64,8 @@ func _ready() -> void:
 	$P2Controls/BtnRotLeft.button_up.connect(func(): Input.action_release("p2_rotate_left"))
 	$P2Controls/BtnRotRight.button_down.connect(func(): Input.action_press("p2_rotate_right"))
 	$P2Controls/BtnRotRight.button_up.connect(func(): Input.action_release("p2_rotate_right"))
+	$P2Controls/BtnFocus.button_down.connect(func(): Input.action_press("p2_focus"))
+	$P2Controls/BtnFocus.button_up.connect(func(): Input.action_release("p2_focus"))
 
 	_on_remove_ads_status_changed()
 

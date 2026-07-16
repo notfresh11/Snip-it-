@@ -155,6 +155,21 @@ func _physics_process(delta: float) -> void:
 	# Gestionare input
 	var prefix = "p1_" if player_id == 1 else "p2_"
 
+	# Gestionare Focus / Overlap Mode - Când ținem apăsat Focus (Shift), pierdem coliziunea cu celălalt jucător ca să îl putem suprapune și tăia
+	var is_focusing = Input.is_action_pressed(prefix + "focus")
+	if player_id == 1:
+		collision_layer = 2
+		if is_focusing:
+			collision_mask = 1 + 8 # Mediul (1) + Bile (8) - fără Player 2 (4)
+		else:
+			collision_mask = 1 + 4 + 8 # Mediul (1) + Player 2 (4) + Bile (8)
+	else:
+		collision_layer = 4
+		if is_focusing:
+			collision_mask = 1 + 8 # Mediul (1) + Bile (8) - fără Player 1 (2)
+		else:
+			collision_mask = 1 + 2 + 8 # Mediul (1) + Player 1 (2) + Bile (8)
+
 	# Mișcare stânga/dreapta
 	var direction = Input.get_axis(prefix + "left", prefix + "right")
 	if direction != 0:

@@ -100,6 +100,15 @@ theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "TAIE (P1)"
 
+[node name="BtnFocus" type="Button" parent="P1Controls"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 20.0
+offset_right = 170.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 10
+text = "Focus"
+
 [node name="P2Controls" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -165,6 +174,15 @@ offset_bottom = 90.0
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_font_sizes/font_size = 18
 text = "TAIE (P2)"
+
+[node name="BtnFocus" type="Button" parent="P2Controls"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 20.0
+offset_right = 170.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 10
+text = "Focus"
 
 [node name="AdOverlay" type="ColorRect" parent="."]
 visible = false
