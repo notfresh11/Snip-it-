@@ -74,12 +74,16 @@ func spawn_players() -> void:
 		# Host controlează Player1, Client controlează Player2
 		player1.set_multiplayer_authority(1) # Host-ul este mereu 1
 
-		# Găsim id-ul peer-ului conectat (Clientul)
-		var peers = multiplayer.get_peers()
-		if peers.size() > 0:
-			player2.set_multiplayer_authority(peers[0])
+		if multiplayer.is_server():
+			# Pe Host, Player 2 aparține primului client conectat
+			var peers = multiplayer.get_peers()
+			if peers.size() > 0:
+				player2.set_multiplayer_authority(peers[0])
+			else:
+				player2.set_multiplayer_authority(1) # fallback
 		else:
-			player2.set_multiplayer_authority(1) # fallback
+			# Pe Client, Player 2 aparține propriei instanțe a clientului
+			player2.set_multiplayer_authority(multiplayer.get_unique_id())
 
 func get_player_script(type: String) -> Script:
 	match type:
