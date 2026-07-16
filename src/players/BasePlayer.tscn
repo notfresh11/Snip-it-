@@ -10,7 +10,6 @@ script = ExtResource("1_base")
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=219182032]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=541530755]
-position = Vector2(207, 148)
 
 [node name="OutlineLine" type="Line2D" parent="." unique_id=660635133]
 
