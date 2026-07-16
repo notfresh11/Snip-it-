@@ -65,4 +65,4 @@ func reset_level() -> void:
 func go_to_lobby() -> void:
 	is_lan_play = false
 	is_host = false
-	get_tree().change_scene_to_file("res://res://src/ui/LobbyMenu.tscn" if FileAccess.file_exists("res://res://src/ui/LobbyMenu.tscn") else "res://src/ui/LobbyMenu.tscn")
+	get_tree().change_scene_to_file("res://src/ui/LobbyMenu.tscn")

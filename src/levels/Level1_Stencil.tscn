@@ -29,17 +29,9 @@ text = "Indicație: Decupați-vă reciproc pentru a umple perfect conturul timp 
 position = Vector2(576, 350)
 
 [node name="Polygon2D" parent="StencilShape" index="0"]
-polygon = PackedVector2Array([
-	Vector2(-60, 40), Vector2(-60, -20), Vector2(0, -70),
-	Vector2(60, -20), Vector2(60, 40), Vector2(20, 40),
-	Vector2(20, 70), Vector2(-20, 70), Vector2(-20, 40)
-])
+polygon = PackedVector2Array(-60, 40, -60, -20, 0, -70, 60, -20, 60, 40, 20, 40, 20, 70, -20, 70, -20, 40)
 
 [node name="CollisionPolygon2D" parent="StencilShape" index="1"]
-polygon = PackedVector2Array([
-	Vector2(-60, 40), Vector2(-60, -20), Vector2(0, -70),
-	Vector2(60, -20), Vector2(60, 40), Vector2(20, 40),
-	Vector2(20, 70), Vector2(-20, 70), Vector2(-20, 40)
-])
+polygon = PackedVector2Array(-60, 40, -60, -20, 0, -70, 60, -20, 60, 40, 20, 40, 20, 70, -20, 70, -20, 40)
 
 [connection signal="stencil_completed" from="StencilShape" to="." method="complete_level"]
