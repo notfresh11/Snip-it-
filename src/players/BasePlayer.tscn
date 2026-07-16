@@ -1,22 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://c6b32p0x2xvyg"]
+[gd_scene format=3 uid="uid://c6b32p0x2xvyg"]
 
-[ext_resource type="Script" path="res://src/players/BasePlayer.gd" id="1_base"]
+[ext_resource type="Script" uid="uid://bpwrt11eygwjq" path="res://src/players/BasePlayer.gd" id="1_base"]
 
-[node name="BasePlayer" type="CharacterBody2D" groups=["players"]]
+[node name="BasePlayer" type="CharacterBody2D" unique_id=886943862 groups=["players"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_base")
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=219182032]
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=541530755]
 
-[node name="OutlineLine" type="Line2D" parent="."]
+[node name="OutlineLine" type="Line2D" parent="." unique_id=660635133]
 
-[node name="FaceSprite" type="Sprite2D" parent="."]
+[node name="FaceSprite" type="Sprite2D" parent="." unique_id=452072225]
 z_index = 1
 
-[node name="CrumbsParticles" type="CPUParticles2D" parent="."]
+[node name="CrumbsParticles" type="CPUParticles2D" parent="." unique_id=90407496]
+position = Vector2(313, 107)
 emitting = false
 amount = 20
 lifetime = 0.6
@@ -30,4 +31,4 @@ initial_velocity_max = 200.0
 scale_amount_min = 4.0
 scale_amount_max = 8.0
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1474649652]
